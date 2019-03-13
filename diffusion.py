@@ -106,14 +106,11 @@ class Grid():
         --------
             None
         """
-        # Add the field to the cell class
-        setattr(Cell, field.name, None)
         # Loop over every cell and apply the field's cell assignemnt function
         it = np.nditer(self.grid, flags=['multi_index'])
         while not it.finished:
-            setattr(self.grid[it.multi_index],
-                    field.name,
-                    f.assignmentFunc(self.grid, it.multt_index))
+            self.grid[it.multi_index][field.name] = 
+                field.assignmentFunc(self.grid, it.multi_index))
             it.iternext()
 
 
@@ -121,7 +118,7 @@ class Grid():
 #============================================
 #                Cell Class
 #============================================
-class Cell():
+class Cell(dict):
     """
     This class is for an individual cell. Each cell contains a region in space and
     stores information about various quantities in that region.
@@ -234,6 +231,8 @@ class OceanCurrent(Field):
         Returns:
         --------
         """
+        vel = np.random.normal(size=grid.shape)
+        return vel
 
 
 
