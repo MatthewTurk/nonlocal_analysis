@@ -71,5 +71,5 @@ class Path():
         # Save the current position
         self.locs.append(self.curPos)
         # Update the current position
-        self.curPos += self.stepSize * grid[ind][field]
+        self.curPos += self.stepSize * grid[ind][field.name]
         return self.curPos

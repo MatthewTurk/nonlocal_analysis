@@ -12,6 +12,7 @@ import sys
 import numpy as np
 
 import grid
+import user_fields as uf
 import utils
 
 
@@ -29,11 +30,13 @@ def main():
     # Create grid
     g = grid.Grid(params['ndims'], params['ncells'], params['boxSize'])
     # Create field
-    g.init_field()
+    field = uf.OceanCurrent()
+    # Initialize the field on the grid
+    g.init_field(field)
     # Set up the paths
     g.init_paths(params['npaths'], startingPoints)
     # Diffuse
-    g.diffuse()
+    g.diffuse(field, params['nsteps'], params['stepSize'])
 
 
 

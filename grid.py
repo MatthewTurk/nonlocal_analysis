@@ -163,7 +163,7 @@ class Grid():
         -----------
             field : Field Class
                 The field to do the "kicking"
-
+,
         Returns:
         --------
             None
