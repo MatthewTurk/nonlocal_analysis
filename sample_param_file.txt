@@ -1,0 +1,5 @@
+nsteps   : 10
+npaths   : 2
+ndims    : 3
+boxSize  : 100.0
+stepSize : 10.0

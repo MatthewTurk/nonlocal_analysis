@@ -34,6 +34,8 @@ def read_parameter_file(fname):
     with open(fname, 'r') as f:
         for line in f:
             key, value = line.split(':')
+            key = key.strip()
+            value = value.strip()
             if key in int_register():
                 value = int(value)
             elif key in float_register():
