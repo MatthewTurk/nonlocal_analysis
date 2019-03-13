@@ -31,7 +31,7 @@ def main():
     # Create field
     g.init_field()
     # Set up the paths
-    g.init_paths()
+    g.init_paths(params['npaths'], startingPoints)
     # Diffuse
     g.diffuse()
 

@@ -8,6 +8,7 @@ Notes:
 import numpy as np
 
 import cell
+import path
 
 
 
@@ -52,6 +53,7 @@ class Grid():
         self.children  = None
         self.cellWidth = self.boxSize / self.ncells 
         self.grid      = self._create_grid()
+        self.paths     = None
 
     #-----
     # _create_grid
@@ -110,3 +112,101 @@ class Grid():
             self.grid[it.multi_index][field.name] = 
                 field.assignmentFunc(self.grid, it.multi_index))
             it.iternext()
+
+    #-----
+    # init_paths
+    #-----
+    def init_paths(self, npaths, startingPoints):
+        """
+        This function creates the path objects.
+
+        Parameters:
+        -----------
+            npaths : int
+                The number of path objects to use
+
+            startingPoints: list
+                A list of coordinate tuples specifying where each path should begin
+
+        Returns:
+        --------
+            None
+        """
+        self.paths = []
+        for i in range(npaths):
+            self.paths[i] = path.Path(startingPoints[i])
+
+    #-----
+    # diffuse
+    #-----
+    def diffuse(self, field, nsteps, stepSize):
+        """
+        This function simply "kicks" each of the path starting points around the volume
+        according to the values of field in the cells. That is, the paths don't accumulate
+        or even really track anything, they just get pushed around by the field.
+
+        QUESTIONS: 
+            1.) How long does the diffusion last?
+                    a.) Should the user simply specify a number of steps?
+                    b.) Should the exit be based on some condition?
+                    c.) Is there a way to determine this dynamically?
+            2.) How large is each "time" step? (it's not really time since the simulation
+                is static, but rather, some path parameter tau)
+                    a.) Should this be fixed or adaptive?
+
+        ANSWERS?
+            1.) The easiest thing to start with is definitely a fixed, user-specifed,
+                number of steps.
+            2.) The easiest thing is just a fixed step that's simply chosen a priori
+
+        Parameters:
+        -----------
+            field : Field Class
+                The field to do the "kicking"
+
+        Returns:
+        --------
+            None
+        """
+        # Loop over each step
+        for i in range(nsteps):
+            # At each step, loop over each path
+            for j in range(len(self.paths)):
+                # Set the step size for the path
+                self.paths[j].stepSize = stepSize
+                # Figure out which cell the "tip" of the path is currently in
+                cell_ind = self._get_cell_index(self.paths[j].curPos)
+                # Update the path's tip position based on the field value in that cell.
+                # This also archives the old current position and saves the field values
+                # in case integration/accumulation happens later
+                self.paths[j].curPos = self.paths[j].update(self.grid, cell_ind, field)
+
+    #-----
+    # _get_cell_index
+    #-----
+    def _get_cell_index(self, loc):
+        """
+        This function returns the index of grid corresponding to the given location.
+        The conversions to and from tuple are probably unnecessary. It's probably easier
+        to just work with a list from the get-go.
+
+        Parameters:
+        -----------
+            loc : tuple
+                The coordinates of the point we want to find the corresponding cell for
+
+        Returns:
+        --------
+            cell_ind : tuple
+                The multi-index of grid corresponding to the cell that loc lies in
+        """
+        # Make loc a list since tuples are immutable
+        if isinstance(loc, tuple):
+            loc = list(loc)
+        # Since the cell width in each dimension is known, all that needs to be done is
+        # to divide the point's position in each dimension by the cell width and floor
+        # the result to get the appropriate index. This implicitly assumes that the cell
+        # width is the same in all dimensions as well as the same for every cell
+        for i in range(len(loc)):
+            loc[i] = int(loc[i] / self.grid[0].cellWidth)
+        return tuple(loc)
