@@ -33,6 +33,8 @@ def main():
     field = uf.OceanCurrent()
     # Initialize the field on the grid
     g.init_field(field)
+    # Just for now, have it start in the middle of the box
+    startingPoints = [tuple([params['boxSize'] / 2.] * params['ndims'])]
     # Set up the paths
     g.init_paths(params['npaths'], startingPoints)
     # Diffuse
