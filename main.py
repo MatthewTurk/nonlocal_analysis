@@ -12,6 +12,7 @@ import sys
 import numpy as np
 
 import grid
+import plot
 import user_fields as uf
 import utils
 
@@ -39,6 +40,12 @@ def main():
     g.init_paths(params['npaths'], startingPoints)
     # Diffuse
     g.diffuse(field, params['nsteps'], params['stepSize'])
+    # Accumulate a quantity along the path
+    #g.path_accumulation(field)
+    # Plot (just to test). Have an arrow in each cell representing the direction
+    # and magnitude of the field in that cell. Then have another set of arrows showing
+    # the path of the test particle
+    plots.test_plot(g, field)
 
 
 

@@ -110,7 +110,7 @@ class Grid():
         it = np.nditer(self.grid, flags=['multi_index'])
         while not it.finished:
             self.grid[it.multi_index][field.name] = 
-                field.assignmentFunc(self.grid, it.multi_index))
+                field.assignmentFunc(self.grid, self.ndims, it.multi_index)
             it.iternext()
 
     #-----

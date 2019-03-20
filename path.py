@@ -71,5 +71,10 @@ class Path():
         # Save the current position
         self.locs.append(self.curPos)
         # Update the current position
+        # This should potentially change. Since the goal is to be able to dynamically
+        # determine the path, instead of just grid[ind][field.name], there should be
+        # a user-specified function here that calculates whichever vector field they
+        # want to use to determine the path, such as direction of steepest density
+        # increase or something
         self.curPos += self.stepSize * grid[ind][field.name]
         return self.curPos

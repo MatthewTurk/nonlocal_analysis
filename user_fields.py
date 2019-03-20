@@ -40,7 +40,7 @@ class OceanCurrent(field.Field):
     #-----
     # random_vel
     #-----
-    def random_vel(self, grid, index):
+    def random_vel(self, grid, ndims, index):
         """
         This function is the assignmentFunc for this field. It assigns a random vector
         to each cell.
@@ -57,5 +57,5 @@ class OceanCurrent(field.Field):
         Returns:
         --------
         """
-        vel = np.random.normal(size=grid.shape)
+        vel = np.random.normal(size=ndims)
         return vel
