@@ -6,6 +6,7 @@ Purpose: Contains the grid class
 Notes:
 """
 import numpy as np
+from scipy.interpolate import RegularGridInterpolator as RGI
 
 import cell
 import path
@@ -210,3 +211,50 @@ class Grid():
         for i in range(len(loc)):
             loc[i] = int(loc[i] / self.grid[0].cellWidth)
         return tuple(loc)
+
+    #-----
+    # path_accumulation
+    #-----
+    def path_accumulation(self, field):
+        """
+        This function performs a line integral of the quantity 'field' along each path
+        that has been defined on the grid. In practice this is done by using the values
+        of field defined in each cell to interpolate to the value of the field at each
+        segment of the path. Once these values are known they can be used, along with
+        the actual equations of the path segments themselves, to perform the line
+        integral.
+
+        Parameters:
+        -----------
+            field : field class instance
+                The field to be integrated along each path
+
+        Returns:
+        --------
+            None
+        """
+        # Build list of coordinates for the interpolator object. This list is comprised
+        # of a series of 1D arrays (1 array for each dimension). Each array contains the
+        # coordinates of the known points in that dimension (i.e., the first array has all
+        # of the x coordinates for the grid points, the second has all the y, etc.). I
+        # feel like the first part of this (creating the coordinate arrays) should be
+        # moved to the constructor, because having to separate out the coordinates for
+        # every field you want to accumulate is dumb, since it's the same thing each time.
+        coords = []
+        for i in range(self.ndims):
+            coords.append([])
+        for c in self.grid:
+            for i in range(self.ndims):
+                coords[i].append(c.loc[i])
+        # Now build the data array (must have the same shape as the grid). This can
+        # probably be done when assigning the field to each grid cell.
+        data = np.zeros(self.grid.shape)
+        it = np.nditer(self.grid, flags=['multi_index'])
+        while not it.finished:
+            data[it.multi_index] = self.grid[it.multi_index][field.name]
+            it.iternext()
+        # Instantiate interpolation object (possible issue (?): this presupposes that
+        # the cells are accessed in the same order when building the coords list and
+        # the data array. MAKE SURE THIS IS TRUE!!!!!)
+        interp = RGI(coords, data)
+        # Get the value of the field at each path segment for each path 
