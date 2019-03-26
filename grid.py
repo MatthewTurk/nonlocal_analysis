@@ -78,7 +78,7 @@ class Grid():
         # Initialize each cell in the grid. This is done using the nditer iterator in
         # order to loop over each element in the ndims dimensional grid. The multi_index
         # flag tells the iterator to yield the index for the current array element
-        it = np.nditer(grid, flags=['multi_index'])
+        it = np.nditer(grid, flags=['multi_index', 'refs_ok'])
         while not it.finished:
             # Get location of cell center from cell index (x0,x1,x2,...,xn). This is just
             # the number of half deltas in each dimension, where delta is the width of the
@@ -108,9 +108,9 @@ class Grid():
             None
         """
         # Loop over every cell and apply the field's cell assignemnt function
-        it = np.nditer(self.grid, flags=['multi_index'])
+        it = np.nditer(self.grid, flags=['multi_index', 'refs_ok'])
         while not it.finished:
-            self.grid[it.multi_index][field.name] = 
+            self.grid[it.multi_index][field.name] = \
                 field.assignmentFunc(self.grid, self.ndims, it.multi_index)
             it.iternext()
 
@@ -135,7 +135,7 @@ class Grid():
         """
         self.paths = []
         for i in range(npaths):
-            self.paths[i] = path.Path(startingPoints[i])
+            self.paths.append(path.Path(startingPoints[i]))
 
     #-----
     # diffuse

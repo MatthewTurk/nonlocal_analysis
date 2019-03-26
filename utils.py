@@ -15,7 +15,8 @@ def get_registers():
     int_register = [
                     'nsteps',
                     'npaths',
-                    'ndims'
+                    'ndims',
+                    'ncells'
                     ]
     float_register = [
                         'boxSize',
@@ -36,9 +37,9 @@ def read_parameter_file(fname):
             key, value = line.split(':')
             key = key.strip()
             value = value.strip()
-            if key in int_register():
+            if key in int_register:
                 value = int(value)
-            elif key in float_register():
+            elif key in float_register:
                 value = float(value)
             params[key] = value
     return params

@@ -25,17 +25,20 @@ def main():
     # Read parameter file
     try:
         params = utils.read_parameter_file(sys.argv[1])
-    except IndexError, IOError:
+    except (IndexError, IOError):
         print('Usage: python ./diffusion.py /path/to/param_file')
         sys.exit(1)
     # Create grid
     g = grid.Grid(params['ndims'], params['ncells'], params['boxSize'])
+    import pdb;pdb.set_trace()
     # Create field
     field = uf.OceanCurrent()
     # Initialize the field on the grid
     g.init_field(field)
     # Just for now, have it start in the middle of the box
-    startingPoints = [tuple([params['boxSize'] / 2.] * params['ndims'])]
+    #startingPoints = [params['boxSize'] / 2. for _ in range(params['ndims'])]
+    startingPoints = [tuple([params['boxSize'] / 2. for _ in range(params['ndims'])])] * params['npaths']
+
     # Set up the paths
     g.init_paths(params['npaths'], startingPoints)
     # Diffuse

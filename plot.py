@@ -47,7 +47,7 @@ def test_plot(g, field):
     ax.grid(linestyle='--', color='#B4C5E4')
     # Plot the field arrows in the cells (this doesn't really work units-wise...)
     for i, c in enumerate(g.grid):
-        ax.arrow(c.loc[0], c.loc[1], c[field.name][0], c[field.name[1], color='#090C9B')
+        ax.arrow(c.loc[0], c.loc[1], c[field.name][0], c[field.name][1], color='#090C9B')
     # Plot the test particle path
     # Loop over every path
     for p in g.paths:
